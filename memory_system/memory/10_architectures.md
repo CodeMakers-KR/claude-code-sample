@@ -1,0 +1,41 @@
+# 프로젝트 구조
+## Front-end 프로젝트 구조
+- local port: 3000
+- components: 컴포넌트와 *.module.css 작성
+- pages: Router DOM에 사용되는 컴포넌트들을 작성.
+- hooks: Custom Hook을 작성
+- utils: 기타 Util을 작성
+- public: Image, Favicon
+- api: Axios 코드 작성 (환경변수 > API Host url 참조)
+- stores: 상태 관리 폴더
+  - slices: slice store 작성
+  - actions: thunk action 작성
+- Component 합성이 필요할 경우 ContextAPI로 합성.
+  
+## Backend 프로젝트 구조
+- local port: 8080
+- CORS: localhost:3000
+- RESTful API Application
+- Main package : kr.codemakers.recipe
+- 기본 패키지
+  - common
+    - exceptions
+      - handlers
+    - utils
+    - config
+      - security
+        - filters
+    - error: Error Controller 작성
+- Domain(DB Table)별로 패키지 생성 (소문자)
+  - 도메인 패키지 마다 다음 패키지를 생성:
+    - web: API Controller 플래스 파일
+    - vo
+      - request: Request Data 클래스 파일
+      - response: Response Data 클래스 파일
+    - service: 업무 로직을 작성하기 위한 인터페이스 파일
+      - impl: 인터페이스 구현 파일
+    - dao: MyBatis 호출을 위한 Mapper 인터페이스 파일
+    - utils: 필요할 경우 생성
+- src/main/resources 아래에 패키지마다 mapper 폴더 작성
+- mapper 파일의 이름은 Dao 인터페이스 이름 뒤에 Mapper.xml을 붙인다.
+- DTO 사용 금지
