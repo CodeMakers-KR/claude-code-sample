@@ -142,6 +142,8 @@
 - Method 는 20 line 이하.
 - Cache
   - 자주 호출되거나 참조되는 데이터 캐싱
+- 인스턴스 멤버를 호출할 때 "this." 반드시 사용.
+- Lombok 사용 금지
 - Document 작성 대상
   - RESTful API Spec (Swagger)
   - Class
@@ -173,5 +175,94 @@
 
 ## ERD
 - 상세 요구사항을 기반으로한 ERD 생성
+- 테이블명과 컬럼명은 자음 위주의 3~4자리 약어로 생성
+- VARCHAR2 Type은 CHAR 길이 사용 (예> VARCHAR2(10) ==> VARCHAR2(10 CHAR))
+- 테이블, 컬럼에 COMMENT 작성
+- 테이블명과 컬럼명에 Oracle 예약어 사용 금지.
+- 시퀀스
+  - 네이밍 규칙: SEQ_{테이블명}_PK
+  - Cycle: YES
+  - 최소값: 1
+  - 최대값: 999999
+- 식별 관계는 사용하지 않음: 비 식별 관계만 사용.
 - PK, UK 사용
 - FK: 논리적 모델에서만 사용. 물리적 모델에서는 사용 하지 않음.
+
+## MyBatis 규칙
+### SELECT
+- 단일 테이블내에서 조회시 resultType 사용
+- 여러 테이블에서 복합 컬럼 조회시 resultMap 사용
+  - association, collection 적극 사용 권장.
+  - VO는 `has a` 규칙으로 구성.
+### Query 작성 규칙
+- PK값 규칙: {테이블명 2자리 약어}-{YYYYMMDD}-{LPAD(시퀀스값, 6, '0')}
+- Pagination
+  - HEADER:
+    ```
+      SELECT *
+        FROM (SELECT ROWNUM AS RNUM
+                   , T.*
+                FROM (
+    ```
+                
+  - FOOTER:
+    ```
+                     ) T
+               WHERE ROWNUM < (#{페이지번호} + 1) * #{출력 행 수})
+       WHERE RNUM >= #{페이지번호} * #{출력 행 수} + 1
+    ```
+- 비교 연산자 ( < ) 사용시 `<![CDATA[]]>` 사용
+  ```
+  WHERE NUM <![CDATA[ < ]]> 10
+  ```
+- SELECT Query 작성 규칙 (Scala, Inline View, Sub query 동일)
+  - 컬럼에 새 이름 부여시 "AS" 생략하지 않음.
+  ```
+    SELECT T1.COLUMN1
+         , T2.COLUMN2 AS NEW_COL_NAME
+         , T3.COLUMN3
+         , CASE
+             WHEN CONDITION THEN
+               VALUE
+             ELSE
+               VALUE
+           END AS COLUMN_ALIAS
+      FROM TABLE1 T1
+     INNER JOIN TABLE2 T2
+        ON T1.PK = T2.FK
+      LEFT OUTER JOIN TABLE3 T3
+        ON T2.PK = T3.FK
+     INNER JOIN (SELECT COLUMN1
+                      , COLUMN2
+                   FROM TABLE4
+                  WHERE CONDITION) T4
+        ON T3.PK = T4.FK
+     WHERE CONDITION
+       AND CONDITION
+     GROUP BY COLUMN1
+         , COLUMN2
+     ORDER BY COLUMN1 ASC
+         , COLUMN2 DESC
+  ```
+- INSERT Query 작성 규칙
+  ```
+    INSERT INTO TABLE
+     (COLUMN1
+    , COLUMN2)
+    VALUES
+     (VAL1
+    , VAL2)
+  ```
+- UPDATE Query 작성 규칙
+  ```
+    UPDATE TABLE
+       SET COLUMN = VALUE
+         , COLUMN2 = VALUE
+     WHERE CONDITION
+  ```
+- DELETE Query 작성 규칙
+  ```
+    DELETE
+      FROM TABLE
+     WHERE CONDITION
+  ```
