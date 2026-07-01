@@ -14,6 +14,7 @@
 - Local Storage
 - Session Storage
 - Vite
+- Jest
 
 #### Front-end 프로젝트 구조
 - local port: 3000
@@ -126,6 +127,26 @@
 - [ ] 마이페이지의 데이터를 기반으로 나의 취향과 전체 회원 취향과의 비교
 - [ ] 내가 등록한 댓글이나 레시피에 새로 등록된 댓글 알림
 - [ ] 내가 등록한 댓글이나 레시피에 새로 등록된 피드백 알림
+
+## 개발 패턴
+### Backend
+- TDD
+  - 단위 기능 개발 전 JUNIT 먼저 작성
+  - Red-Green-Refactor 패턴
+  - Given-When-Then-Verify 패턴
+- Cache
+  - 자주 호출되거나 참조되는 데이터 캐싱
+
+#### 테스트 커버리지 기준
+- Class: 100%
+- Line: 100%
+- Condition: 100%
+
+### Front-End
+- TDD
+  - 단위 기능 개발전 JEST 먼저 작성
+  - Strict Mode에서 중복 호출 제거
+  - 과도한 Re-Rendering 제거
 
 ## ERD
 - 상세 요구사항을 기반으로한 ERD 생성
