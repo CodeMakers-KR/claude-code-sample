@@ -41,6 +41,7 @@
 - Spring Web Socket
 - STOMP
 - jUnit
+- Swagger
 
 ### DB
 - OracleXE 21c
@@ -134,10 +135,18 @@
   - 단위 기능 개발 전 JUNIT 먼저 작성
   - Red-Green-Refactor 패턴
   - Given-When-Then-Verify 패턴
+- SOLID 설계
+- Method 는 20 line 이하.
 - Cache
   - 자주 호출되거나 참조되는 데이터 캐싱
+- Document 작성 대상
+  - RESTful API Spec (Swagger)
+  - Class
+  - Method
+  - Field
+  - Parameters & Arguments
 
-#### 테스트 커버리지 기준
+#### TDD 테스트 커버리지 기준
 - Class: 100%
 - Line: 100%
 - Condition: 100%
@@ -146,7 +155,17 @@
 - TDD
   - 단위 기능 개발전 JEST 먼저 작성
   - Strict Mode에서 중복 호출 제거
-  - 과도한 Re-Rendering 제거
+  - 과도한 Re-Rendering 발생하지 않도록 함.
+- Props Type 지정
+  - Component Props 지정하여 사용.
+- Document 작성 대상
+  - Component
+  - Hooks
+  - Page
+  - Utils
+  - Reducer
+  - Thunks
+  - Axios
 
 ## ERD
 - 상세 요구사항을 기반으로한 ERD 생성
