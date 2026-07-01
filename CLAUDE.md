@@ -16,6 +16,7 @@
 - Vite
 
 #### Front-end 프로젝트 구조
+- local port: 3000
 - components: 컴포넌트와 *.module.css 작성
 - pages: Router DOM에 사용되는 컴포넌트들을 작성.
 - hooks: Custom Hook을 작성
@@ -44,6 +45,8 @@
 - OracleXE 21c
   
 #### Backend 프로젝트 구조
+- local port: 8080
+- CORS: localhost:3000
 - RESTful API Application
 - Main package : kr.codemakers.recipe
 - 기본 패키지
