@@ -76,7 +76,7 @@
 ### FR-001: TODO 생성
 - 설명: 사용자가 새로운 TODO를 생성한다.
 - API Endpoint: POST /api/v1/todos
-- 입력 필드:
+#### 입력 필드:
 | 필드 | 타입 | 필수 | 제약 조건 | 기본값 |
 |---|---|---|---|---|
 | title | String | Y | 1~200자, 공백만(Empty String) 불가 | - |
@@ -85,7 +85,7 @@
 | startDate | LocalDate | N | - | null |
 | dueDate | LocalDate | N | - | null |
 
-- 성공 응답 필드:
+#### 성공 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | status | int | 201 |
@@ -98,7 +98,7 @@
 | - dueDate | String | 새 TODO dueDate |
 | - createdAt | LocalDate | 새 TODO createdAt |
 
-- 실패 응답 필드:
+#### 실패 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
@@ -123,7 +123,7 @@
 ### FR-002: TODO 목록 조회
 - 설명: Working Group에 노출할 TODO 목록 조회
 - API Endpoint: GET /api/v1/todos
-- 성공 응답 필드:
+#### 성공 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | status | int | 200 |
@@ -156,7 +156,7 @@
 | - - createdAt | LocalDate | TODO createdAt |
 | - - updatedAy | LocalDate | TODO createdAt |
 
-- 실패 응답 필드:
+#### 실패 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
@@ -166,7 +166,7 @@
 ### FR-003: 티켓 상세 조회
 - 설명: 특정 TODO의 전체 정보를 조회한다.
 - API Endpoint: GET /api/v1/todos/{id}
-- 성공 응답 필드:
+#### 성공 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | status | int | 200 |
@@ -179,7 +179,7 @@
 | - dueDate | String | TODO dueDate |
 | - createdAt | LocalDate | TODO createdAt |
 
-- 실패 응답 필드:
+#### 실패 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
@@ -189,7 +189,7 @@
 ### FR-004: TODO 수정
 - 설명: TODO의 제목, 설명, 우선순위, 시작예정일, 종료예정일을 수정한다.
 - API Endpoint: PUT /api/v1/todos/{id}
-- 입력 필드:
+#### 입력 필드:
 | 필드 | 타입 | 필수 | 제약 조건 | 기본값 |
 |---|---|---|---|---|
 | title | String | Y | 1~200자, 공백만(Empty String) 불가 | - |
@@ -198,7 +198,7 @@
 | startDate | LocalDate | N | - | null |
 | dueDate | LocalDate | N | - | null |
 
-- 성공 응답 필드:
+#### 성공 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | status | int | 200 |
@@ -211,7 +211,7 @@
 | - dueDate | String | 수정한 TODO dueDate |
 | - createdAt | LocalDate | 수정한 TODO createdAt |
 
-- 실패 응답 필드:
+#### 실패 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
@@ -238,7 +238,7 @@
 - 설명: TODO를 Done 칼럼으로 이동하여 완료 처리하고, 종료일을 자동 설정한다.
 - API Endpoint: PUT /api/v1/todos/{id}/complete
 
-- 성공 응답 필드:
+#### 성공 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | status | int | 200 |
@@ -251,7 +251,7 @@
 | - dueDate | String | 완료한 TODO dueDate |
 | - createdAt | LocalDate | 완료한 TODO createdAt |
 
-- 실패 응답 필드:
+#### 실패 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
@@ -266,13 +266,13 @@
 ### FR-006: TODO 삭제
 - 설명: TODO를 영구 삭제한다.
 - API Endpoint: DELETE /api/v1/todos/:id
-- 성공 응답 필드:
+#### 성공 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | status | int | 200 |
 | data | Object | 삭제한 TODO id |
 
-- 실패 응답 필드:
+#### 실패 응답 필드:
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
@@ -282,7 +282,7 @@
 ### FR-007: 상태/순서 변경 (드래그 앤 드롭)
 - 설명: TODO를 다른 칼럼으로 이동하거나 같은 칼럼 내에서 순서를 변경한다.
 - API Endpoint: PUT /api/v1/todos/reorder
-- 입력 필드:
+#### 입력 필드:
 | 필드 | 타입 | 설명 |
 |---|---|---|
 | id | String | 이동할 TODO ID |
