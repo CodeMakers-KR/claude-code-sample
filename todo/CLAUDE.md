@@ -9,9 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 프로젝트 구조
 - tod-man
-    - src
-        - client         # front end
-        - server         # back end 
+    - client         # front end
+    - server         # back end 
 
 ### Server
 - 요구사항기반 domain 단위로 구성
