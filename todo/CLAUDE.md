@@ -63,6 +63,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Build Tool: Maven
 - Packaging: Jar
 - Framework: Spring Boot 4, Spring Security, MyBatis, Spring Validator
+- Security: jsoup (입력 HTML 정화, 저장형 XSS 방어)
 - Test: jUnit5
 - Database: Oracle (Docker)
 ### Client
@@ -72,6 +73,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - State: state, Redux Toolkit
 - Styling: Tailwind CSS, *.module.css
 - Web Client Library: window.fetch
+- Drag & Drop: @dnd-kit/core (^6.3.1), @dnd-kit/sortable (^10.0.0)
+- Test: Vitest, React Testing Library, jsdom
 
 ## 공통 정의
 ### status 값
@@ -125,6 +128,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | - dueDate | LocalDate | 새 TODO dueDate |
 | - createdAt | LocalDateTime | 새 TODO createdAt |
 | - updatedAt | LocalDateTime | 새 TODO updatedAt |
+| - completedAt | LocalDateTime | 새 TODO completedAt (null) |
 
 #### 실패 응답 필드:
 | 필드 | 타입 | 값 |
@@ -132,6 +136,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | error | Object | - |
 | - status | int | 검증 실패: 400, System Error: 500 |
 | - message | String | 에러 내용 |
+| - errors | List | 입력 검증 실패 시에만 포함. 필드별 { field, message } 전체 (API_SPEC 1.2) |
 #### 처리 규칙
 - 생성시 항상 todo 가장 위에 배치
 - 생성일(createdAt), 수정일(updatedAt) 자동 설정
@@ -168,6 +173,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | - - dueDate | LocalDate | TODO dueDate |
 | - - createdAt | LocalDateTime | TODO createdAt |
 | - - updatedAt | LocalDateTime | TODO updatedAt |
+| - - completedAt | LocalDateTime | TODO completedAt (null) |
 | - inProgress | List | - |
 | - - id | String | TODO id |
 | - - title | String | TODO title |
@@ -180,6 +186,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | - - dueDate | LocalDate | TODO dueDate |
 | - - createdAt | LocalDateTime | TODO createdAt |
 | - - updatedAt | LocalDateTime | TODO updatedAt |
+| - - completedAt | LocalDateTime | TODO completedAt (null) |
 | - done | List | - |
 | - - id | String | TODO id |
 | - - title | String | TODO title |
@@ -230,7 +237,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
-| - status | int | 검증 실패: 400, 존재하지 않는 TODO: 404, System Error: 500 |
+| - status | int | 존재하지 않는 TODO: 404, System Error: 500 |
 | - message | String | 에러 내용 |
 
 ### FR-004: TODO 수정
@@ -269,6 +276,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | error | Object | - |
 | - status | int | 검증 실패: 400, 존재하지 않는 TODO: 404, System Error: 500 |
 | - message | String | 에러 내용 |
+| - errors | List | 입력 검증 실패 시에만 포함. 필드별 { field, message } 전체 (API_SPEC 1.2) |
 
 #### 처리 규칙
 - 수정일(updatedAt) 자동 설정
@@ -293,7 +301,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 #### 입력 필드:
 | 필드 | 타입 | 필수 | 제약 조건 | 기본값 |
 |---|---|---|---|---|
-| position | int | N | done 칼럼 내 새 위치 | null (done 칼럼 가장 상단) |
+| position | int | N | done 칼럼 내 순서 index (0부터 시작). 서버가 실제 position 값을 재계산 | null (done 칼럼 가장 상단) |
+- 요청 본문은 생략할 수 있다. 생략하면 position 미입력과 같게 처리한다.
 
 #### 성공 응답 필드:
 | 필드 | 타입 | 값 |
@@ -357,7 +366,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 |---|---|---|
 | id | String | 이동할 TODO ID |
 | status | String | 이동 대상 칼럼 (todo, inProgress, done) |
-| position | int | 칼럼 내 새 위치 |
+| position | int | 이동 대상 칼럼 내 순서 index (0부터 시작, 이동하는 카드를 제외한 목록 기준). 서버가 실제 position 값을 재계산 |
 
 #### 성공 응답 필드:
 | 필드 | 타입 | 값 |
@@ -384,12 +393,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 필드 | 타입 | 값 |
 |---|---|---|
 | error | Object | - |
-| - status | int | 검증 실패(잘못된 status 값, position 누락, done에서 done으로 순서 변경): 400, 존재하지 않는 TODO: 404, System Error: 500 |
+| - status | int | 검증 실패(id 누락, status 누락, 잘못된 status 값, position 누락, done에서 done으로 순서 변경): 400, 존재하지 않는 TODO: 404, System Error: 500 |
 | - message | String | 에러 내용 |
+| - errors | List | 입력 검증 실패 시에만 포함. 필드별 { field, message } 전체 (API_SPEC 1.2) |
 
 #### 검증 에러 메시지
 | 조건 | 메시지 |
 |---|---|
+| id 누락 | "잘못된 요청입니다." |
+| status 누락 | "이동할 상태를 입력해주세요" |
 | 잘못된 status 값 | "상태는 todo, inProgress, done 중 하나를 선택하세요" |
 | position 누락 | "이동할 위치를 입력해주세요" |
 | done에서 done으로 순서 변경 | "완료된 TODO는 순서를 변경할 수 없습니다" |
@@ -399,6 +411,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 트랜잭션으로 원자성 보장
 
 #### position 재계산 로직:
+- 입력 index → 삽입 위치: index = 0이면 맨 앞, index = 칼럼 카드 수이면 맨 뒤, 그 외에는 index-1번째와 index번째 카드 사이
+- 범위를 벗어난 index: 음수는 맨 앞, 칼럼 카드 수 초과는 맨 뒤로 보정
 - 두 카드 사이에 삽입할 때: (prev + next) / 2로 계산
 - 정수 나눗셈 결과 간격이 없을 때: 해당 칼럼 전체를 1024 간격으로 재정렬
 - 맨 앞 삽입: 첫 번째 카드의 position - 1024
@@ -482,19 +496,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - [ ] 확인 후 할 일이 영구 삭제되고 목록에서 사라진다.
 #### 관련 FR: FR-006
 
+### US-008: 할 일 검색
+> 사용자는 제목으로 할 일을 찾을 수 있다.
+- [ ] 보드 위 한 줄 검색창에 검색어를 입력하면 모든 칼럼(todo, in progress, done)에서 제목에 검색어가 포함된 카드만 표시된다.
+- [ ] 띄어쓰기를 무시하고 비교한다. (예: 검색어 "대신" → 제목 "선발대 신설" 표시)
+- [ ] 검색어를 지우면 전체 카드가 다시 표시된다.
+#### 관련 FR: FR-002 (조회한 목록을 클라이언트에서 필터링, API 변경 없음)
+
 ## 코딩 컨벤션
 ### Client
 - Component
 ```
 const ExamComponent = () => {
-    // on[TagName or ClassName][EventName]Handler
-    const onButtonClickHandler = () => {
+    // on[EventName][TagName or ClassName]Handler
+    const onClickButtonHandler = () => {
         alert("Clicked");
     };
 
     return (
         <div>
-            <button onClick={onButtonClickHandler}>Click Me</button>
+            <button onClick={onClickButtonHandler}>Click Me</button>
         </div>
     );
 };
@@ -503,6 +524,38 @@ export default ExamComponent
 - Promise 패턴 대신 async/await 패턴 사용
 - src/utils/fetchUtil.js 내부에 공통 fetch 코드 필요.
     - Request, Response에 대응할 Interceptor 기능 구현.
+- Redux Thunk
+    - `createAsyncThunk`를 사용하지 않는다.
+    - 요청 단계별 action은 slice의 `reducers`에 `[thunk명]Start`, `[thunk명]Success`, `[thunk명]Failure`로 정의한다. action은 일반 객체(`{ type, payload }`)다.
+    - thunk는 `store/actions`에 `(dispatch, getState)`를 받는 함수를 반환하는 함수로 직접 작성한다. (async/await)
+    - thunk 반환값: 성공 `{ ok: true, data }`, 실패 `{ ok: false, error }` (`error` = `{ status, message, errors }`). 컴포넌트는 `ok`로 성공·실패를 판단한다.
+    - 요청을 구분하는 id가 필요하면 `@reduxjs/toolkit`의 `nanoid()`로 만든다.
+```
+// store/slices/todoSlice.js
+reducers: {
+    fetchTodosStart: (state) => { state.loading.list = true },
+    fetchTodosSuccess: (state, action) => { state.loading.list = false; state.columns = action.payload },
+    fetchTodosFailure: (state, action) => { state.loading.list = false; state.error = action.payload.message },
+}
+
+// store/actions/todoActions.js
+export const fetchTodos = () => async (dispatch) => {
+    dispatch(fetchTodosStart())
+    try {
+        const data = await todoApi.getTodos()
+        dispatch(fetchTodosSuccess(data))
+        return { ok: true, data }
+    } catch (error) {
+        const payload = toErrorPayload(error)
+        dispatch(fetchTodosFailure(payload))
+        return { ok: false, error: payload }
+    }
+}
+
+// 컴포넌트
+const result = await dispatch(fetchTodos())
+if (result.ok) { ... }
+```
 
 ### Server
 - 기능 개발 시작 전, 반드시 아래 단계로 구현.
