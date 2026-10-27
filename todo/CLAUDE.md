@@ -1,5 +1,3 @@
-<!-- @format -->
-
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -652,6 +650,9 @@ if (result.ok) { ... }
 
 ### Server
 
+- 인스턴스 필드, 인스턴스 메소드 호출 시 "this." 반드시 작성.
+- static 필드, static 메소드 호출 시 클래스 명 반드시 작성. (import static 금지)
+- @Bean 사용할 경우 접근 제어 지시자 생략.
 - 기능 개발 시작 전, 반드시 아래 단계로 구현.
   1. junit 실패 테스트 케이스 작성
   2. 실패 검증 (Validation, Exception)
