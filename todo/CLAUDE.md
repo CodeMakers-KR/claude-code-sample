@@ -64,8 +64,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Packaging: Jar
 - Framework: Spring Boot 4, Spring Security, MyBatis, Spring Validator
 - Security: jsoup (입력 HTML 정화, 저장형 XSS 방어)
-- Test: jUnit5
-- Database: Oracle (Docker)
+- Test: jUnit6
+- Database: Oracle
 ### Client
 - Language: ECMAScript (Strict Mode)
 - Build Tool: Vite
