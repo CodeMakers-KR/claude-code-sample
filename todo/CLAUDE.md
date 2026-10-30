@@ -604,7 +604,7 @@ const ExamComponent = () => {
 
     return (
         <div>
-            <button onClick={onButtonClickHandler}>Click Me</button>
+            <button onClick={onClickButtonHandler}>Click Me</button>
         </div>
     );
 };
