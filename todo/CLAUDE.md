@@ -597,7 +597,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 const ExamComponent = () => {
-    // on[TagName or ClassName][EventName]Handler
+    // on[EventName][TagName or ClassName]Handler
     const onButtonClickHandler = () => {
         alert("Clicked");
     };
